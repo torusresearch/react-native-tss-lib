@@ -1,4 +1,4 @@
-# @toruslabs/react-native-tss-lib
+# @toruslabs/react-native-tss-lib-bridge
 
 Tss lib for react-native
 ** only for react-native **
@@ -6,7 +6,7 @@ Tss lib for react-native
 ## Installation
 
 ```sh
-npm install @toruslabs/react-native-tss-lib
+npm install --save @toruslabs/react-native-tss-lib-bridge
 ```
 
 ## Usage
@@ -19,8 +19,8 @@ npm install @toruslabs/react-native-tss-lib
 3. 
 
 ```js
-import { Bridge } from "react-native-tss-lib";
-import * as TssLibRN from "react-native-tss-lib";
+import { Bridge } from "@toruslabs/react-native-tss-lib-bridge";
+import * as TssLibRN from "@toruslabs/react-native-tss-lib-bridge";
 import {
   Web3AuthMPCCoreKit,
 } from '@web3auth/mpc-core-kit';
