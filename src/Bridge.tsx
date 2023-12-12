@@ -1,12 +1,13 @@
 import React from 'react';
 import WebView from 'react-native-webview';
-import {Message, useWebViewMessage} from 'react-native-react-bridge';
+import { useWebViewMessage } from 'react-native-react-bridge';
+import type { Message } from 'react-native-react-bridge';
 import webApp from './WebApp';
-import {View, StyleSheet} from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import {
   TssLibAction,
-  TssLibMessageResponse,
-  TssLibMessageRequest as TssLibMessageRequest,
+  type TssLibMessageResponse,
+  type TssLibMessageRequest,
   TssLibMessageType,
 } from './common';
 import '@toruslabs/tss-client';
@@ -19,7 +20,7 @@ export const rejectMap = new Map<string, any>();
 
 // resolve promise on response
 const handleTssLibResponse = (data: TssLibMessageResponse) => {
-  const {ruid, action, result} = data;
+  const { ruid, action, result } = data;
   // console.log('tssLib Result', ruid, action, result);
   const key = ruid + action;
   if (resolveMap.has(key)) {
@@ -32,16 +33,16 @@ const handleTssLibResponse = (data: TssLibMessageResponse) => {
 
 // handle request from webview (js_send_msg, js_read_msg)
 const handleTssLibRequest = async (data: TssLibMessageRequest) => {
-  const {ruid, action, payload} = data;
+  const { ruid, action, payload } = data;
 
   // console.log('tssLib Request from webview', ruid, action, payload);
   if (action === TssLibAction.JsReadMsg) {
-    const {session, self_index, party, msg_type} = payload;
-    const result = await (globalThis as any).js_read_msg(
+    const { session, self_index, party, msg_type } = payload;
+    const result = await (global as any).js_read_msg(
       session,
       self_index,
       party,
-      msg_type,
+      msg_type
     );
     bridgeEmit({
       type: TssLibMessageType.TssLibResponse,
@@ -54,13 +55,13 @@ const handleTssLibRequest = async (data: TssLibMessageRequest) => {
     // need to add promise to resolveMap?
     // console.log('done', action, result);
   } else if (action === TssLibAction.JsSendMsg) {
-    const {session, self_index, party, msg_type, msg_data} = payload;
-    const result = await (globalThis as any).js_send_msg(
+    const { session, self_index, party, msg_type, msg_data } = payload;
+    const result = await (global as any).js_send_msg(
       session,
       self_index,
       party,
       msg_type,
-      msg_data,
+      msg_data
     );
     bridgeEmit({
       type: TssLibMessageType.TssLibResponse,
@@ -78,7 +79,7 @@ const handleTssLibRequest = async (data: TssLibMessageRequest) => {
 export const Bridge = () => {
   // useWebViewMessage hook create props for WebView and handle communication
   // The argument is callback to receive message from React
-  const {ref, onMessage, emit} = useWebViewMessage(async message => {
+  const { ref, onMessage, emit } = useWebViewMessage(async (message) => {
     if (message.type === 'debug') {
       console.log('debug', message.data);
     }
@@ -103,7 +104,7 @@ export const Bridge = () => {
         // ref, source and onMessage must be passed to react-native-webview
         ref={ref}
         // Pass the source code of React app
-        source={{html: webApp}}
+        source={{ html: webApp }}
         onMessage={onMessage}
         onError={console.log}
       />

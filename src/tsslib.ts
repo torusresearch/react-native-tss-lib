@@ -1,15 +1,15 @@
-import {generatePrivate} from '@toruslabs/eccrypto';
-import {bridgeEmit, resolveMap} from './Bridge';
-import {TssLibAction, TssLibMessageType} from './common';
+import { generatePrivate } from '@toruslabs/eccrypto';
+import { bridgeEmit, resolveMap } from './Bridge';
+import { TssLibAction, TssLibMessageType } from './common';
 import '@toruslabs/tss-client';
 
 export async function batch_size(): Promise<number> {
   let ruid = generatePrivate().toString('hex');
   bridgeEmit({
     type: TssLibMessageType.TssLibRequest,
-    data: {ruid, action: TssLibAction.BatchSize, payload: {}},
+    data: { ruid, action: TssLibAction.BatchSize, payload: {} },
   });
-  const result = await new Promise(resolve => {
+  const result = await new Promise((resolve) => {
     resolveMap.set(ruid + 'batch_size', resolve);
   });
   return result as number;
@@ -22,10 +22,10 @@ export async function random_generator(state: string): Promise<number> {
     data: {
       ruid,
       action: TssLibAction.RandomGenerator,
-      payload: {state},
+      payload: { state },
     },
   });
-  const result = await new Promise(resolve => {
+  const result = await new Promise((resolve) => {
     resolveMap.set(ruid + TssLibAction.RandomGenerator, resolve);
   });
   return result as number;
@@ -37,10 +37,10 @@ export async function random_generator_free(rng: number): Promise<void> {
     data: {
       ruid,
       action: TssLibAction.RandomGeneratorFree,
-      payload: {rng},
+      payload: { rng },
     },
   });
-  await new Promise(resolve => {
+  await new Promise((resolve) => {
     resolveMap.set(ruid + TssLibAction.RandomGeneratorFree, resolve);
   });
 }
@@ -50,7 +50,7 @@ export async function threshold_signer(
   player_count: number,
   threshold: number,
   share: string,
-  pubkey: string,
+  pubkey: string
 ): Promise<number> {
   //   console.log('pubkey', pubkey);
   //   console.log('publickey', Buffer.from(pubkey, 'base64').length);
@@ -61,10 +61,17 @@ export async function threshold_signer(
     data: {
       ruid,
       action: TssLibAction.ThresholdSigner,
-      payload: {session, player_index, player_count, threshold, share, pubkey},
+      payload: {
+        session,
+        player_index,
+        player_count,
+        threshold,
+        share,
+        pubkey,
+      },
     },
   });
-  const result = await new Promise(resolve => {
+  const result = await new Promise((resolve) => {
     resolveMap.set(ruid + TssLibAction.ThresholdSigner, resolve);
   });
   return result as number;
@@ -76,10 +83,10 @@ export async function threshold_signer_free(signer: number): Promise<void> {
     data: {
       ruid,
       action: TssLibAction.ThresholdSignerFree,
-      payload: {signer},
+      payload: { signer },
     },
   });
-  await new Promise(resolve => {
+  await new Promise((resolve) => {
     resolveMap.set(ruid + TssLibAction.ThresholdSignerFree, resolve);
   });
 }
@@ -91,10 +98,10 @@ export async function setup(signer: number, rng: number): Promise<any> {
     data: {
       ruid,
       action: TssLibAction.Setup,
-      payload: {signer, rng},
+      payload: { signer, rng },
     },
   });
-  const result = await new Promise(resolve => {
+  const result = await new Promise((resolve) => {
     resolveMap.set(ruid + TssLibAction.Setup, resolve);
   });
   return result;
@@ -103,7 +110,7 @@ export async function setup(signer: number, rng: number): Promise<any> {
 export async function precompute(
   parties: Uint8Array,
   signer: number,
-  rng: number,
+  rng: number
 ): Promise<any> {
   let ruid = generatePrivate().toString('hex');
 
@@ -112,10 +119,10 @@ export async function precompute(
     data: {
       ruid,
       action: TssLibAction.Precompute,
-      payload: {parties: Array.from(parties), signer, rng},
+      payload: { parties: Array.from(parties), signer, rng },
     },
   });
-  const result = await new Promise(resolve => {
+  const result = await new Promise((resolve) => {
     resolveMap.set(ruid + TssLibAction.Precompute, resolve);
   });
 
@@ -125,7 +132,7 @@ export async function precompute(
 export async function local_sign(
   msg: string,
   hash_only: boolean,
-  precompute: any,
+  precompute: any
 ): Promise<any> {
   let ruid = generatePrivate().toString('hex');
   bridgeEmit({
@@ -133,10 +140,10 @@ export async function local_sign(
     data: {
       ruid,
       action: TssLibAction.LocalSign,
-      payload: {msg, hash_only, precompute},
+      payload: { msg, hash_only, precompute },
     },
   });
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     resolveMap.set(ruid + TssLibAction.LocalSign, resolve);
   });
 }
@@ -148,10 +155,10 @@ export async function get_r_from_precompute(precompute: any): Promise<any> {
     data: {
       ruid,
       action: TssLibAction.GetRFromPrecompute,
-      payload: {precompute},
+      payload: { precompute },
     },
   });
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     resolveMap.set(ruid + TssLibAction.GetRFromPrecompute, resolve);
   });
 }
@@ -161,7 +168,7 @@ export async function local_verify(
   hash_only: boolean,
   r: any,
   sig_frags: any[],
-  pubkey: string,
+  pubkey: string
 ): Promise<any> {
   let ruid = generatePrivate().toString('hex');
   bridgeEmit({
@@ -169,10 +176,10 @@ export async function local_verify(
     data: {
       ruid,
       action: TssLibAction.LocalVerify,
-      payload: {msg, hash_only, r, sig_frags, pubkey},
+      payload: { msg, hash_only, r, sig_frags, pubkey },
     },
   });
-  const result = await new Promise(resolve => {
+  const result = await new Promise((resolve) => {
     resolveMap.set(ruid + TssLibAction.LocalVerify, resolve);
   });
   return result;
@@ -183,7 +190,7 @@ export async function sign(
   msg: string,
   hash_only: boolean,
   signer: number,
-  rng: number,
+  rng: number
 ): Promise<any> {
   let ruid = generatePrivate().toString('hex');
   bridgeEmit({
@@ -191,10 +198,10 @@ export async function sign(
     data: {
       ruid,
       action: TssLibAction.Sign,
-      payload: {counterparties, msg, hash_only, signer, rng},
+      payload: { counterparties, msg, hash_only, signer, rng },
     },
   });
-  const result = await new Promise(resolve => {
+  const result = await new Promise((resolve) => {
     resolveMap.set(ruid + TssLibAction.Sign, resolve);
   });
   return result;

@@ -1,15 +1,14 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import {
   webViewRender,
   emit,
   useNativeMessage,
 } from 'react-native-react-bridge/lib/web';
 import * as TssLib from '@toruslabs/tss-lib';
-
 import {
   TssLibAction,
-  TssLibMessageResponse,
-  TssLibMessageRequest,
+  type TssLibMessageResponse,
+  type TssLibMessageRequest,
   TssLibMessageType,
 } from '../common';
 
@@ -41,7 +40,7 @@ if ((globalThis as any).js_read_msg === undefined) {
     session: string,
     self_index: number,
     party: number,
-    msg_type: string,
+    msg_type: string
   ) {
     const ruid = session + party + msg_type;
     // debug({type: 'js_read_msg', msg: 'start', ruid});
@@ -50,17 +49,14 @@ if ((globalThis as any).js_read_msg === undefined) {
       data: {
         ruid,
         action: TssLibAction.JsReadMsg,
-        payload: {session, self_index, party, msg_type},
+        payload: { session, self_index, party, msg_type },
       },
     });
-    const result = await new Promise((resolve, reject) => {
+    const result = await new Promise((resolve) => {
       resolverMap.set(ruid + '-js_read_msg', resolve);
-      setTimeout(() => {
-        if (resolverMap.has(ruid + '-js_read_msg')) {
-          resolverMap.delete(ruid + '-js_read_msg');
-          reject('timeout');
-        }
-      }, 5000);
+      // setTimeout(() => {
+      //   reject('timeout');
+      // }, 5000);
     });
     console.log('js_read_msg DONE', result);
 
@@ -74,7 +70,7 @@ if ((globalThis as any).js_send_msg === undefined) {
     self_index: number,
     party: number,
     msg_type: string,
-    msg_data?: string,
+    msg_data?: string
   ) {
     const ruid = session + party + msg_type;
     // debug({type: 'js_send_msg', msg: 'start', ruid});
@@ -83,43 +79,37 @@ if ((globalThis as any).js_send_msg === undefined) {
       data: {
         ruid,
         action: TssLibAction.JsSendMsg,
-        payload: {session, self_index, party, msg_type, msg_data},
+        payload: { session, self_index, party, msg_type, msg_data },
       },
     });
-    const result = await new Promise((resolve, reject) => {
+    const result = await new Promise((resolve) => {
       resolverMap.set(ruid + '-js_send_msg', resolve);
-      setTimeout(() => {
-        if (resolverMap.has(ruid + '-js_read_msg')) {
-          resolverMap.delete(ruid + '-js_read_msg');
-          reject('timeout');
-        }
-      }, 5000);
     });
     return result;
   };
 }
 
-TssLib.initWasm();
+TssLib.default('https://node-1.node.web3auth.io/tss/v1/clientWasm');
 
 async function handleTssLib(
-  data: TssLibMessageRequest,
+  data: TssLibMessageRequest
 ): Promise<TssLibMessageResponse> {
-  const {action, payload, ruid} = data as TssLibMessageRequest;
+  const { action, payload, ruid } = data as TssLibMessageRequest;
   if (action === TssLibAction.BatchSize) {
-    return {ruid, action, result: TssLib.batch_size()};
+    return { ruid, action, result: TssLib.batch_size() };
   }
   if (action === TssLibAction.RandomGenerator) {
-    const {state} = payload;
+    const { state } = payload;
     const result = TssLib.random_generator(state);
-    return {ruid, action, result};
+    return { ruid, action, result };
   }
   if (action === TssLibAction.RandomGeneratorFree) {
-    const {rng} = payload;
+    const { rng } = payload;
     TssLib.random_generator_free(rng);
-    return {ruid, action, result: 'done'};
+    return { ruid, action, result: 'done' };
   }
   if (action === TssLibAction.ThresholdSigner) {
-    const {session, player_index, player_count, threshold, share, pubkey} =
+    const { session, player_index, player_count, threshold, share, pubkey } =
       payload;
     try {
       const result = TssLib.threshold_signer(
@@ -128,88 +118,88 @@ async function handleTssLib(
         player_count,
         threshold,
         share,
-        pubkey,
+        pubkey
       );
-      return {ruid, action, result};
+      return { ruid, action, result };
     } catch (e) {
-      return {ruid, action, error: e};
+      return { ruid, action, error: e };
     }
   }
   if (action === TssLibAction.ThresholdSignerFree) {
-    const {signer} = payload;
+    const { signer } = payload;
     TssLib.threshold_signer_free(signer);
-    return {ruid, action, result: 'done'};
+    return { ruid, action, result: 'done' };
   }
   if (action === TssLibAction.Setup) {
-    const {signer, rng} = payload;
+    const { signer, rng } = payload;
     //result from setup not able to stringify
     await TssLib.setup(signer, rng);
-    return {ruid, action, result: 'done'};
+    return { ruid, action, result: 'done' };
   }
   if (action === TssLibAction.Precompute) {
-    const {parties, signer, rng} = payload;
+    const { parties, signer, rng } = payload;
     // conversion to Uint8Array needed as bridge transfer messed up Uint8Array
     const result = await TssLib.precompute(
       Uint8Array.from(parties),
       signer,
-      rng,
+      rng
     );
-    return {ruid, action, result};
+    return { ruid, action, result };
   }
   if (action === TssLibAction.LocalSign) {
-    const {msg, hash_only, precompute} = payload;
+    const { msg, hash_only, precompute } = payload;
     const result = TssLib.local_sign(msg, hash_only, precompute);
-    return {ruid, action, result};
+    return { ruid, action, result };
   }
   if (action === TssLibAction.GetRFromPrecompute) {
-    const {precompute} = payload;
+    const { precompute } = payload;
     const result = TssLib.get_r_from_precompute(precompute);
-    return {ruid, action, result};
+    return { ruid, action, result };
   }
   if (action === TssLibAction.LocalVerify) {
-    const {msg, hash_only, r, sig_frags, pubkey} = payload;
+    const { msg, hash_only, r, sig_frags, pubkey } = payload;
     const result = TssLib.local_verify(msg, hash_only, r, sig_frags, pubkey);
-    return {ruid, action, result};
+    return { ruid, action, result };
   }
   if (action === TssLibAction.Sign) {
-    const {counterparties, msg, hash_only, signer, rng} = payload;
+    const { counterparties, msg, hash_only, signer, rng } = payload;
     const result = await TssLib.sign(
       counterparties,
       msg,
       hash_only,
       signer,
-      rng,
+      rng
     );
-    return {ruid, action, result};
+    return { ruid, action, result };
   }
 
-  return {ruid, action, result: 'unknown action'};
+  return { ruid, action, result: 'unknown action' };
 }
 
 async function handleTssLibResponse(
-  data: TssLibMessageResponse,
+  data: TssLibMessageResponse
 ): Promise<TssLibMessageResponse> {
-  const {action, result, ruid} = data;
+  const { action, result, ruid } = data;
   if (action === TssLibAction.JsSendMsg) {
     resolverMap.get(ruid + '-js_send_msg')(result);
     resolverMap.delete(ruid + '-js_send_msg');
     console.log('js_send_msg resolved', result);
-    return {ruid, action, result: 'done'};
+    return { ruid, action, result: 'done' };
   }
   if (action === TssLibAction.JsReadMsg) {
     resolverMap.get(ruid + '-js_read_msg')(result);
     resolverMap.delete(ruid + '-js_read_msg');
-    return {ruid, action, result: 'done'};
+    return { ruid, action, result: 'done' };
   }
-  throw {ruid, action, result: 'unknown action'};
+  throw { ruid, action, result: 'done' };
 }
 
 const Root = () => {
-  useNativeMessage(async (message: {type: string; data: any}) => {
+  useNativeMessage(async (message: { type: string; data: any }) => {
     if (message.type === TssLibMessageType.TssLibRequest) {
       try {
         let result = await handleTssLib(message.data);
-        emit({type: TssLibMessageType.TssLibResponse, data: result});
+        emit({ type: TssLibMessageType.TssLibResponse, data: result });
       } catch (e) {
         error({
           msg: `${message.type} error`,
@@ -222,7 +212,7 @@ const Root = () => {
       try {
         await handleTssLibResponse(message.data);
       } catch (e) {
-        debug({type: 'handleTssLibResponse error', e});
+        debug({ type: 'handleTssLibResponse error', e });
         error({
           msg: `${message.type} error`,
           payload: message.data,
@@ -235,7 +225,7 @@ const Root = () => {
   bridgeEmit = emit;
 
   useEffect(() => {
-    emit({type: 'tsslibInit', data: 'initializing'});
+    emit({ type: 'tsslibInit', data: 'initializing' });
   }, []);
 
   return <div style={style} />;
