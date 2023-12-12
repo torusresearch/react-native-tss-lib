@@ -34,7 +34,7 @@
     "@toruslabs/torus-scripts": "^5.1.0",
     "@babel/core": "7.22.11",
     "@babel/preset-env": "7.22.14",
-    "@babel/traverse": "7.22.11",
+    "@babel/traverse": "7.23.2",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-typescript": "11.1.5",
