@@ -1,181 +1,62 @@
 {
-  "name": "@toruslabs/react-native-tsslib",
+  "name": "@toruslabs/react-native-tss-lib",
   "version": "0.1.0",
-  "description": "Tss lib for react-native",
-  "main": "lib/commonjs/index",
-  "module": "lib/module/index",
-  "types": "lib/typescript/src/index.d.ts",
+  "description": "",
+  "types": "dist/index.d.ts",
+  "ts": "src/index.ts",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
   "react-native": "src/index",
-  "source": "src/index",
   "files": [
+    "dist",
     "src",
-    "lib",
-    "android",
-    "ios",
-    "cpp",
-    "*.podspec",
-    "!ios/build",
-    "!android/build",
-    "!android/gradle",
-    "!android/gradlew",
-    "!android/gradlew.bat",
-    "!android/local.properties",
-    "!**/__tests__",
-    "!**/__fixtures__",
-    "!**/__mocks__",
-    "!**/.*"
+    "README.md"
   ],
   "scripts": {
-    "example": "yarn workspace react-native-tss-lib-example",
-    "test": "jest",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
-    "prepare": "bob build",
-    "release": "release-it"
+    "release": "torus-scripts release",
+    "pre-commit": "lint-staged --cwd .",
+    "lint": "eslint --fix 'src/**/*.ts'",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "tsc": "tsc -p . --noEmit",
+    "build": "rollup -c ",
+    "prepack": "npm run build"
   },
-  "keywords": [
-    "react-native",
-    "ios",
-    "android"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/torusresearch/react-native-tss-lib.git"
+  "lint-staged": {
+    "*.{json,md}": [
+      "prettier --write"
+    ],
+    "*.{js,ts}": "eslint --cache --fix"
   },
-  "author": "ieow <cherngwoei@tor.us> (https://github.com/torusresearch)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/torusresearch/react-native-tss-lib/issues"
-  },
-  "homepage": "https://github.com/torusresearch/react-native-tss-lib#readme",
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
+  "keywords": [],
+  "author": "Web3Auth",
+  "license": "BSD",
   "devDependencies": {
-    "@commitlint/config-conventional": "^17.0.2",
-    "@evilmartians/lefthook": "^1.5.0",
-    "@react-native/babel-preset": "^0.74.0",
-    "@react-native/eslint-config": "^0.72.2",
-    "@release-it/conventional-changelog": "^5.0.0",
-    "@toruslabs/eccrypto": "^4.0.0",
-    "@toruslabs/tss-client": "^2.1.0",
-    "@toruslabs/tss-lib": "^2.0.0",
-    "@types/jest": "^28.1.2",
-    "@types/react": "~17.0.21",
-    "@types/react-native": "0.70.0",
-    "commitlint": "^17.0.2",
-    "del-cli": "^5.0.0",
-    "eslint": "^8.4.1",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-prettier": "^4.0.0",
-    "jest": "^28.1.1",
-    "pod-install": "^0.1.0",
-    "prettier": "^2.0.5",
+    "@babel/core": "7.22.11",
+    "@babel/preset-env": "7.22.14",
+    "@babel/traverse": "7.22.11",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-typescript": "11.1.5",
+    "@toruslabs/tss-client": ">=2.0.0",
+    "@toruslabs/tss-lib": "file:../tss-client/packages/tss-lib/toruslabs-tss-lib-2.0.0.tgz",
+    "@types/node": "20.10.1",
+    "@types/react": "^18.2.42",
     "react": "18.2.0",
-    "react-native": "0.72.0",
-    "react-native-builder-bob": "^0.20.0",
+    "react-dom": "18.2.0",
+    "react-native": "0.72.4",
     "react-native-react-bridge": "^0.11.2",
-    "react-native-webview": "^13.6.0",
-    "release-it": "^15.0.0",
-    "turbo": "^1.10.7",
-    "typescript": "^5.0.2"
-  },
-  "resolutions": {
-    "@types/react": "17.0.21"
+    "react-native-webview": "^13.6.3",
+    "rimraf": "5.0.5",
+    "rollup": "4.7.0",
+    "ts-jest": "29.1.1",
+    "tslib": "2.6.2",
+    "typescript": "5.0.4"
   },
   "peerDependencies": {
-    "@toruslabs/eccrypto": "^4.0.0",
-    "@toruslabs/tss-client": "^2.0.0",
-    "@toruslabs/tss-lib": "*",
-    "react": "*",
-    "react-native": "*",
-    "react-native-react-bridge": "^0.11.2",
-    "react-native-webview": "^13.6.0"
-  },
-  "workspaces": [
-    "example"
-  ],
-  "packageManager": "yarn@3.6.1",
-  "engines": {
-    "node": ">= 18.0.0"
-  },
-  "jest": {
-    "preset": "react-native",
-    "modulePathIgnorePatterns": [
-      "<rootDir>/example/node_modules",
-      "<rootDir>/lib/"
-    ]
-  },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
-  "release-it": {
-    "git": {
-      "commitMessage": "chore: release ${version}",
-      "tagName": "v${version}"
-    },
-    "npm": {
-      "publish": true
-    },
-    "github": {
-      "release": true
-    },
-    "plugins": {
-      "@release-it/conventional-changelog": {
-        "preset": "angular"
-      }
-    }
-  },
-  "eslintConfig": {
-    "root": true,
-    "extends": [
-      "@react-native",
-      "prettier"
-    ],
-    "rules": {
-      "prettier/prettier": [
-        "error",
-        {
-          "quoteProps": "consistent",
-          "singleQuote": true,
-          "tabWidth": 2,
-          "trailingComma": "es5",
-          "useTabs": false
-        }
-      ]
-    }
-  },
-  "eslintIgnore": [
-    "node_modules/",
-    "lib/"
-  ],
-  "prettier": {
-    "quoteProps": "consistent",
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "es5",
-    "useTabs": false
-  },
-  "react-native-builder-bob": {
-    "source": "src",
-    "output": "lib",
-    "targets": [
-      "commonjs",
-      "module",
-      [
-        "typescript",
-        {
-          "project": "tsconfig.build.json"
-        }
-      ]
-    ]
-  },
-  "codegenConfig": {
-    "name": "RNTssLibViewSpec",
-    "type": "components",
-    "jsSrcsDir": "src"
+    "@toruslabs/eccrypto": ">=4.0.0",
+    "@toruslabs/tss-client": ">=2.0.0",
+    "@toruslabs/tss-lib": "file:../tss-client/packages/tss-lib/toruslabs-tss-lib-2.0.0.tgz",
+    "react-native-react-bridge": ">=0.11.2",
+    "react-native-webview": ">=13.6.0"
   }
 }

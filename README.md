@@ -1,11 +1,12 @@
-# react-native-tss-lib
+# @toruslabs/react-native-tss-lib
 
 Tss lib for react-native
+** only for react-native **
 
 ## Installation
 
 ```sh
-npm install react-native-tss-lib
+npm install @toruslabs/react-native-tss-lib
 ```
 
 ## Usage
