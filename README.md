@@ -10,7 +10,7 @@ npm install @toruslabs/react-native-tss-lib
 ```
 
 ## Usage
-1. Install requried peer dependency
+1. Install required peer dependency
    https://github.com/torusresearch/react-native-tss-lib/blob/4cf28633cb5c066c7237821441e4d6497e3041d4/package.json#L87
    
 2. configure metro.config
