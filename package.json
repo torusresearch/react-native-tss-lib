@@ -30,17 +30,14 @@
   "keywords": [],
   "author": "Web3Auth",
   "license": "BSD",
-  "dependencies": {
-    "@toruslabs/tss-lib": ">=2.3.0"
-  },
   "devDependencies": {
-    "@toruslabs/torus-scripts": "^5.1.0",
     "@babel/core": "7.22.11",
     "@babel/preset-env": "7.22.14",
     "@babel/traverse": "7.22.11",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-commonjs": "^25.0.7",
     "@rollup/plugin-typescript": "11.1.5",
+    "@toruslabs/torus-scripts": "^5.1.0",
     "@types/node": "20.10.1",
     "@types/react": "^18.2.42",
     "react": "18.2.0",
@@ -48,6 +45,7 @@
     "react-native": "0.72.4",
     "react-native-react-bridge": "^0.11.2",
     "react-native-webview": "^13.6.3",
+    "@toruslabs/tss-dkls-lib": "^3.0.0-alpha.0",
     "rimraf": "5.0.5",
     "rollup": "4.7.0",
     "ts-jest": "29.1.1",
@@ -57,6 +55,7 @@
   "peerDependencies": {
     "@toruslabs/eccrypto": ">=4.0.0",
     "react-native-react-bridge": ">=0.11.2",
-    "react-native-webview": ">=13.6.0"
+    "react-native-webview": ">=13.6.0",
+    "@toruslabs/tss-dkls-lib": ">=3.0.0-alpha.0"
   }
 }
