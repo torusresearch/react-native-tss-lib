@@ -1,7 +1,6 @@
 import { generatePrivate } from '@toruslabs/eccrypto';
 import { bridgeEmit, resolveMap } from './Bridge';
 import { TssLibAction, TssLibMessageType } from './common';
-import '@toruslabs/tss-client';
 
 export async function batch_size(): Promise<number> {
   let ruid = generatePrivate().toString('hex');

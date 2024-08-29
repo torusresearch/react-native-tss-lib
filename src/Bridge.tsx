@@ -10,7 +10,6 @@ import {
   type TssLibMessageRequest,
   TssLibMessageType,
 } from './common';
-import '@toruslabs/tss-client';
 
 // let promiseOn;
 export let bridgeEmit: (message: Message<any>) => void;

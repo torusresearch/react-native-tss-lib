@@ -4,7 +4,8 @@ import {
   emit,
   useNativeMessage,
 } from 'react-native-react-bridge/lib/web';
-import * as TssLib from '@toruslabs/tss-lib';
+import TssLib from '@toruslabs/tss-dkls-lib';
+
 import {
   TssLibAction,
   type TssLibMessageResponse,
@@ -88,8 +89,6 @@ if ((globalThis as any).js_send_msg === undefined) {
     return result;
   };
 }
-
-TssLib.default('https://node-1.node.web3auth.io/tss/v1/clientWasm');
 
 async function handleTssLib(
   data: TssLibMessageRequest
