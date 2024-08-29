@@ -4,7 +4,7 @@ import {
   emit,
   useNativeMessage,
 } from 'react-native-react-bridge/lib/web';
-import {tssLib} from '@toruslabs/tss-dkls-lib';
+import TssLib from '@toruslabs/tss-dkls-lib';
 
 import {
   TssLibAction,
@@ -89,8 +89,6 @@ if ((globalThis as any).js_send_msg === undefined) {
     return result;
   };
 }
-
-const TssLib = tssLib.lib;
 
 async function handleTssLib(
   data: TssLibMessageRequest
