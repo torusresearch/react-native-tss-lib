@@ -40,9 +40,9 @@
     "@toruslabs/torus-scripts": "^5.1.0",
     "@types/node": "20.10.1",
     "@types/react": "^18.2.42",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-native": "0.72.4",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-native": "^0.75.2",
     "react-native-react-bridge": "^0.11.2",
     "react-native-webview": "^13.6.3",
     "@toruslabs/tss-dkls-lib": "^3.0.0",
@@ -53,9 +53,8 @@
     "typescript": "5.0.4"
   },
   "peerDependencies": {
-    "@toruslabs/eccrypto": ">=5.0.0",
-    "react-native-react-bridge": ">=0.11.2",
-    "react-native-webview": ">=13.6.0",
-    "@toruslabs/tss-dkls-lib": ">=3.0.0"
+    "@toruslabs/eccrypto": ">=5.0.0, <6.0.0",
+    "react-native-webview": ">=13.6.0, <14.0.0",
+    "@toruslabs/tss-dkls-lib": ">=3.0.0, <4.0.0"
   }
 }
