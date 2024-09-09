@@ -34,3 +34,9 @@ export type TssLibMessageRequest = {
   action: string;
   payload: any;
 };
+
+export type TssLibError = {
+  msg: string;
+  payload: any;
+  error: any;
+};

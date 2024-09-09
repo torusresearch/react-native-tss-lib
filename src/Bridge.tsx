@@ -9,7 +9,9 @@ import {
   type TssLibMessageResponse,
   type TssLibMessageRequest,
   TssLibMessageType,
+  TssLibError,
 } from './common';
+import log, {LogLevelDesc} from 'loglevel';
 
 // let promiseOn;
 export let bridgeEmit: (message: Message<any>) => void;
@@ -23,12 +25,24 @@ const handleTssLibResponse = (data: TssLibMessageResponse) => {
   // console.log('tssLib Result', ruid, action, result);
   const key = ruid + action;
   if (resolveMap.has(key)) {
+    rejectMap.delete(key);
     resolveMap.get(key)(result);
     resolveMap.delete(key);
   } else {
     console.log('tssLib', 'no resolver', key);
   }
 };
+
+const handleTssLibError = (data: TssLibMessageResponse) => {
+  const { ruid, action, error } = data;
+  const key = ruid + action;
+  if (rejectMap.has(key)) {
+    resolveMap.delete(key);
+    rejectMap.get(key)(error);
+    rejectMap.delete(key);
+  }
+};
+
 
 // handle request from webview (js_send_msg, js_read_msg)
 const handleTssLibRequest = async (data: TssLibMessageRequest) => {
@@ -75,12 +89,13 @@ const handleTssLibRequest = async (data: TssLibMessageRequest) => {
   }
 };
 
-export const Bridge = () => {
+export const Bridge = ( params: {logLevel?: LogLevelDesc} ) => {
   // useWebViewMessage hook create props for WebView and handle communication
   // The argument is callback to receive message from React
+  log.setLevel(params.logLevel || 'info');
   const { ref, onMessage, emit } = useWebViewMessage(async (message) => {
     if (message.type === 'debug') {
-      console.log('debug', message.data);
+      log.debug('debug', message.data);
     }
 
     // response handler
@@ -91,8 +106,15 @@ export const Bridge = () => {
       await handleTssLibRequest(message.data as TssLibMessageRequest);
     }
     if (message.type === 'error') {
-      console.log('error', message.data);
-      // rejectMap.get(message.data.ruid + message.data.action)(
+      const { payload, error } = message.data as TssLibError;
+      if (payload.ruid && payload.action) {
+        handleTssLibError( {...payload as TssLibMessageResponse, error});
+      } else {
+        log.error('error', error);
+      }
+    }
+    if (message.type === 'state') {
+      log.debug('tsslibInit', message.data);
     }
   });
   bridgeEmit = emit;
@@ -105,7 +127,7 @@ export const Bridge = () => {
         // Pass the source code of React app
         source={{ html: webApp }}
         onMessage={onMessage}
-        onError={console.log}
+        onError={log.error}
       />
     </View>
   );

@@ -1,16 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   webViewRender,
   emit,
   useNativeMessage,
 } from 'react-native-react-bridge/lib/web';
-import TssLib from '@toruslabs/tss-dkls-lib';
+import TssLibv4 from '@toruslabs/tss-dkls-lib';
 
 import {
   TssLibAction,
   type TssLibMessageResponse,
   type TssLibMessageRequest,
   TssLibMessageType,
+  TssLibError,
 } from '../common';
 
 const style = {
@@ -27,7 +28,7 @@ const debug = (data: any) => {
     data,
   });
 };
-const error = (data: any) => {
+const error = (data: TssLibError) => {
   bridgeEmit({
     type: 'error',
     data,
@@ -91,7 +92,8 @@ if ((globalThis as any).js_send_msg === undefined) {
 }
 
 async function handleTssLib(
-  data: TssLibMessageRequest
+  data: TssLibMessageRequest,
+  TssLib: ReturnType<typeof TssLibv4.loadSync>
 ): Promise<TssLibMessageResponse> {
   const { action, payload, ruid } = data as TssLibMessageRequest;
   if (action === TssLibAction.BatchSize) {
@@ -176,7 +178,7 @@ async function handleTssLib(
 }
 
 async function handleTssLibResponse(
-  data: TssLibMessageResponse
+  data: TssLibMessageResponse,
 ): Promise<TssLibMessageResponse> {
   const { action, result, ruid } = data;
   if (action === TssLibAction.JsSendMsg) {
@@ -194,16 +196,35 @@ async function handleTssLibResponse(
 }
 
 const Root = () => {
+  const [TssLib, setTssLib] = useState< ReturnType<typeof TssLibv4.loadSync> | null>(null);
+  useEffect(() => {
+      const initTssLib = async () => {
+        debug('initializing');
+        const tssLiblocal = await TssLibv4.load();
+        setTssLib(tssLiblocal);
+        debug('initialized');
+      };
+
+      // handle error
+      initTssLib().catch((e) => {
+        error(e.message);
+      });
+  }, []);
   useNativeMessage(async (message: { type: string; data: any }) => {
     if (message.type === TssLibMessageType.TssLibRequest) {
       try {
-        let result = await handleTssLib(message.data);
+        if (!TssLib) {
+          throw new Error('TssLib not initialized');
+        }
+        debug({ type: 'handleTssLibRequest', message });
+        let result = await handleTssLib(message.data, TssLib);
         emit({ type: TssLibMessageType.TssLibResponse, data: result });
       } catch (e) {
+        debug({ type: 'handleTssLibResponse error', e });
         error({
           msg: `${message.type} error`,
           payload: message.data,
-          error: e,
+          error: (e as Error).message,
         });
       }
     }
@@ -215,17 +236,13 @@ const Root = () => {
         error({
           msg: `${message.type} error`,
           payload: message.data,
-          error: e,
+          error: (e as Error).message,
         });
       }
     }
   });
 
   bridgeEmit = emit;
-
-  useEffect(() => {
-    emit({ type: 'tsslibInit', data: 'initializing' });
-  }, []);
 
   return <div style={style} />;
 };
