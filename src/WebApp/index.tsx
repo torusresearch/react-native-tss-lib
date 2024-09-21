@@ -245,7 +245,7 @@ const Root = () => {
   });
 
 
-  return <div style={style} > REACT WEBVIEW</div>;
+  return <div style={style} />;
 };
 
 export default webViewCreateRoot(<Root />);
