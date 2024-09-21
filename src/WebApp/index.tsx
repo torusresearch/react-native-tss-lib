@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
-  webViewRender,
   emit,
   useNativeMessage,
+  webViewCreateRoot
 } from 'react-native-react-bridge/lib/web';
 import TssLibv4 from '@toruslabs/tss-dkls-lib';
 
@@ -22,6 +22,8 @@ const style = {
 };
 
 let bridgeEmit: any;
+bridgeEmit = emit;
+
 const debug = (data: any) => {
   bridgeEmit({
     type: 'debug',
@@ -242,9 +244,8 @@ const Root = () => {
     }
   });
 
-  bridgeEmit = emit;
 
-  return <div style={style} />;
+  return <div style={style} > REACT WEBVIEW</div>;
 };
 
-export default webViewRender(<Root />);
+export default webViewCreateRoot(<Root />);
