@@ -1,7 +1,7 @@
 import React from 'react';
 import WebView from 'react-native-webview';
 import { useWebViewMessage } from 'react-native-react-bridge';
-import type { Message } from 'react-native-react-bridge';
+import type { ReactNativeMessage } from 'react-native-react-bridge';
 import webApp from './WebApp';
 import { View, StyleSheet } from 'react-native';
 import {
@@ -14,7 +14,7 @@ import {
 import log, {LogLevelDesc} from 'loglevel';
 
 // let promiseOn;
-export let bridgeEmit: (message: Message<any>) => void;
+export let bridgeEmit: (message: ReactNativeMessage<any>) => void;
 
 export const resolveMap = new Map<string, any>();
 export const rejectMap = new Map<string, any>();
