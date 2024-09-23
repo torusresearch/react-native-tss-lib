@@ -1,6 +1,6 @@
 {
   "name": "@toruslabs/react-native-tss-lib-bridge",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "",
   "types": "dist/index.d.ts",
   "ts": "src/index.ts",
